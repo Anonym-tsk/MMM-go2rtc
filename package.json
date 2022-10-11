@@ -1,0 +1,16 @@
+{
+  "name": "mmm-go2rtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "MMM-go2rtc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anonym-tsk/MMM-go2rtc.git"
+  },
+  "author": "https://github.com/Anonym-tsk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Anonym-tsk/MMM-go2rtc/issues"
+  },
+  "homepage": "https://github.com/Anonym-tsk/MMM-go2rtc#readme"
+}
