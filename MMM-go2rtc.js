@@ -1,16 +1,15 @@
 Module.register('MMM-go2rtc', {
     video: null,
     pc: null,
-    ws: null,
     stream: null,
     connectTimeout: null,
 
     defaults: {
         host: '127.0.0.1',
         port: '1984',
-        secure: false,
+        https: false,
         width: '50%',
-        src: '',
+        entity: '',
     },
 
     start() {
@@ -51,6 +50,17 @@ Module.register('MMM-go2rtc', {
         return error;
     },
 
+    sendOffer(sdp) {
+        this.sendSocketNotification('OFFER', {config: this.config, sdp});
+    },
+
+    socketNotificationReceived(notification, payload) {
+        if (notification === 'ANSWER') {
+            this._start(payload.sdp);
+            this.updateDom();
+        }
+    },
+
     _startConnectTimer() {
         clearTimeout(this.connectTimeout);
         this.connectTimeout = setTimeout(() => {
@@ -59,32 +69,8 @@ Module.register('MMM-go2rtc', {
     },
 
     _stopConnectTimer() {
-        // TODO: Что за таймер
         clearTimeout(this.connectTimeout);
         this.connectTimeout = null;
-    },
-
-    _connectWs() {
-        const wsUrl = `ws${this.config.secure ? 's' : ''}://${this.config.host}:${this.config.port}/api/ws?src=${this.config.src}`;
-
-        this.ws = new WebSocket(wsUrl);
-        this.ws.onopen = () => {
-            this._stopConnectTimer();
-            const msg = {type: 'webrtc/offer', value: this.pc.localDescription.sdp};
-            this.ws.send(JSON.stringify(msg));
-        };
-
-        this.ws.onmessage = (ev) => {
-            try {
-                const msg = JSON.parse(ev.data);
-                if (msg.type === 'webrtc/candidate') {
-                    this.pc.addIceCandidate({candidate: msg.value, sdpMid: ''});
-                } else if (msg.type === 'webrtc/answer') {
-                    this.pc.setRemoteDescription(new RTCSessionDescription({type: 'answer', sdp: msg.value}));
-                    this.updateDom();
-                }
-            } catch (e) {}
-        };
     },
 
     async _init() {
@@ -102,14 +88,13 @@ Module.register('MMM-go2rtc', {
             }
             this._startConnectTimer();
             if (e.candidate === null) {
-                this._connectWs();
+                this._connect();
             }
         }
 
         this.pc.onconnectionstatechange = () => {
             if (this.pc.connectionState === 'failed') {
                 this.pc.close();
-                this.ws.close(1000);
                 this.video.srcObject = null;
                 this._init();
             }
@@ -139,5 +124,22 @@ Module.register('MMM-go2rtc', {
         this._startConnectTimer();
         const offer = await this.pc.createOffer({offerToReceiveVideo: true});
         return this.pc.setLocalDescription(offer);
+    },
+
+    _start(sdp) {
+        try {
+            const remoteDesc = new RTCSessionDescription({
+                type: 'answer',
+                sdp,
+            });
+            this.pc.setRemoteDescription(remoteDesc);
+        } catch (e) {
+            console.warn(e);
+        }
+    },
+
+    async _connect() {
+        this._stopConnectTimer();
+        this.sendOffer(this.pc.localDescription.sdp);
     },
 });

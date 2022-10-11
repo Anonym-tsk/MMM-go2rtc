@@ -6,13 +6,13 @@ Depends on [go2rtc](https://github.com/AlexxIT/go2rtc) installed.
 
 ### Configuration
 
-| Option | Default value | Description                     |
-|--------|---------------|---------------------------------|
-| host   | 127.0.0.1     | go2rtc host                     |
-| port   | 1984          | go2rtc port                     |
-| secure | false         | Use https for go2rtc connection |
-| width  | 50%           | Max video width                 |
-| src    |               | Camera name                     |
+| Option  | Default value | Description                     |
+|---------|---------------|---------------------------------|
+| host    | 127.0.0.1     | go2rtc host                     |
+| port    | 1984          | go2rtc port                     |
+| https   | false         | Use https for go2rtc connection |
+| width   | 50%           | Max video width                 |
+| entity  |               | Camera name                     |
 
 ---
 

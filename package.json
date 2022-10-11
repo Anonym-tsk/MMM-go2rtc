@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/Anonym-tsk/MMM-go2rtc/issues"
   },
-  "homepage": "https://github.com/Anonym-tsk/MMM-go2rtc#readme"
+  "homepage": "https://github.com/Anonym-tsk/MMM-go2rtc#readme",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
 }
