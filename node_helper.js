@@ -1,6 +1,5 @@
 const NodeHelper = require('node_helper');
-const fetch = require('node-fetch').default;
-const FormData = require('node-fetch').FormData;
+const fetch = require('node-fetch');
 
 module.exports = NodeHelper.create({
     start: function() {
@@ -10,14 +9,12 @@ module.exports = NodeHelper.create({
     sendOffer: function(data) {
         const url = `http${data.config.https ? 's' : ''}://${data.config.host}:${data.config.port}/stream/${data.config.entity}/channel/0/webrtc`;
         const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+        const body = 'data=' + encodeURIComponent(btoa(data.sdp));
 
-        const formData = new FormData();
-        formData.set('data', btoa(data.sdp));
-
-        fetch(url, {method: 'POST', body: formData, headers})
+        fetch(url, {method: 'POST', body, headers})
             .then((response) => {
                 if (response.ok) {
-                    response.text().then((data) => this.sendSocketNotification('ANSWER', atob(data)));
+                    response.text().then((data) => this.sendSocketNotification('ANSWER', {sdp: atob(data)}));
                 } else {
                     throw new Error('Response is not ok');
                 }
