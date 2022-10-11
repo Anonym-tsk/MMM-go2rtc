@@ -1,6 +1,6 @@
 const NodeHelper = require('node_helper');
-const fetch = require('node-fetch');
-const FormData = require('form-data');
+const fetch = require('node-fetch').default;
+const FormData = require('node-fetch').FormData;
 
 module.exports = NodeHelper.create({
     start: function() {
