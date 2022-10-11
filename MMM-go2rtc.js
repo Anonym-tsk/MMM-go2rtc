@@ -1,4 +1,4 @@
-Module.register('MMM-HomeAssistant-WebRTC', {
+Module.register('MMM-go2rtc', {
     video: null,
     pc: null,
     ws: null,
