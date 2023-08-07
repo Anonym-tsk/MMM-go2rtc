@@ -66,28 +66,28 @@ Module.register('MMM-go2rtc', {
     },
 
     notificationReceived: function(notification, payload, sender) {
-        if (notification === "DOM_OBJECTS_CREATED") {
-            this.sendNotification("REGISTER_API", {
+        if (notification === 'DOM_OBJECTS_CREATED') {
+            this.sendNotification('REGISTER_API', {
                 module: this.name,
-                path: "go2rtc",
+                path: 'go2rtc',
                 actions: {
                     play: {
-                        notification: "GO2RTC_PLAY",
-                        prettyName: "Play Stream"
+                        notification: 'GO2RTC_PLAY',
+                        prettyName: 'Play Stream'
                     },
                     stop: {
-                        notification: "GO2RTC_STOP",
-                        prettyName: "Stop Stream"
+                        notification: 'GO2RTC_STOP',
+                        prettyName: 'Stop Stream'
                     },
                 }
             });
         }
 
-        if (notification === 'GO2RTC_PLAY' && this.instance === "SERVER") {
+        if (notification === 'GO2RTC_PLAY' && this.instance === 'SERVER') {
             this.play();
         }
 
-        if (notification === 'GO2RTC_STOP' && this.instance === "SERVER") {
+        if (notification === 'GO2RTC_STOP' && this.instance === 'SERVER') {
             this.stop();
         }
     },
