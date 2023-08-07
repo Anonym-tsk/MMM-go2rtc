@@ -32,15 +32,8 @@ Module.register('MMM-go2rtc', {
             this.video.muted = true;
             this.video.style.maxWidth = this.config.width;
             this.video.playsInline = true;
-            this.video.srcObject = this.stream;
 
-            const recover = () => {
-                this.video.srcObject = this.stream;
-                this.video.play();
-            };
-            this.video.onpause = recover;
-            this.video.onstalled = recover;
-            this.video.onerror = recover;
+            this.play();
             return this.video;
         }
 
@@ -48,6 +41,55 @@ Module.register('MMM-go2rtc', {
         error.classList.add('go2rtc-error', 'small');
         error.innerHTML = 'No data from Home Assistant';
         return error;
+    },
+
+    play() {
+        const recover = () => {
+            this.video.srcObject = this.stream;
+            this.video.play();
+        };
+
+        this.video.onpause = recover;
+        this.video.onstalled = recover;
+        this.video.onerror = recover;
+
+        recover();
+    },
+
+    stop() {
+        this.video.onpause = null;
+        this.video.onstalled = null;
+        this.video.onerror = null;
+
+        this.video.pause();
+        this.video.srcObject = null;
+    },
+
+    notificationReceived: function(notification, payload, sender) {
+        if (notification === "DOM_OBJECTS_CREATED") {
+            this.sendNotification("REGISTER_API", {
+                module: this.name,
+                path: "go2rtc",
+                actions: {
+                    play: {
+                        notification: "GO2RTC_PLAY",
+                        prettyName: "Play Stream"
+                    },
+                    stop: {
+                        notification: "GO2RTC_STOP",
+                        prettyName: "Stop Stream"
+                    },
+                }
+            });
+        }
+
+        if (notification === 'GO2RTC_PLAY' && this.instance === "SERVER") {
+            this.play();
+        }
+
+        if (notification === 'GO2RTC_STOP' && this.instance === "SERVER") {
+            this.stop();
+        }
     },
 
     sendOffer(sdp) {
