@@ -83,11 +83,11 @@ Module.register('MMM-go2rtc', {
             });
         }
 
-        if (notification === 'GO2RTC_PLAY' && this.instance === 'SERVER') {
+        if (notification === 'GO2RTC_PLAY') {
             this.play();
         }
 
-        if (notification === 'GO2RTC_STOP' && this.instance === 'SERVER') {
+        if (notification === 'GO2RTC_STOP') {
             this.stop();
         }
     },
